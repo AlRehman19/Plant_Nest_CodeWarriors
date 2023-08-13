@@ -428,7 +428,7 @@ Plants Nest is a sustainable and eco-friendly initiative that promotes a new per
 $Flowering = DB::table('products')
 ->join('species', 'products.species', '=', 'species.id')
 ->where('products.category', '1')
-->select('products.productName','products.quantity','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
+->select('products.productName','products.quantity','products.slug','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
 ->limit(4)
 ->get();
 
@@ -438,70 +438,35 @@ $Flowering = DB::table('products')
 
     ?>
             <div id="flowering" class="tab-pane active show" role="tabpanel">
-                <div class="row">
-            @foreach($Flowering as $Flowering)
-            
-            <div class="col-6 col-sm-6 col-lg-3 col-md-4">
-                    <div class="single-product-area mb-50 wow fadeInUp " data-wow-delay="100ms">
-                        <!-- Product Image -->
-                        <div class="product-img">
-                        <img src="{{ asset('images/'.$Flowering->image) }}" style="height: 300px;" class="card-img-top shadow" alt="Product 1">
-                            <!-- Product Tag -->
-                            <div class="product-tag">@if($Flowering->quantity == 0)
-                                            
-                                        @endif
-                                        @if($Flowering->quantity == 0)
-                                        <!-- If quantity is 0, do not display any sticker -->
-                                    @elseif($Flowering->discount > 0)
-                                        <a href="">{{- $Flowering->discount }}%</a> 
-                                    @else
-                                       <a href="">NEW</a>
-                                    @endif
-                            </div>
-                          
-                                            
-                                               
-                            <div class="product-meta d-flex">
-                            @if($Flowering->quantity == 0)
-                            <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success" style="background:red;" href="#">
-                Out Of Stock
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                                @else
-                                <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success add-to-cart" style="background:#70c745" href="{{ route('addbook.to.cart', $Flowering->id) }}">
-                 Add to Cart
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                              
-                                @endif
-                            </div>
-                        </div>
-                        <!-- Product Info -->
-                        <div class="product-info mt-15 text-center">
-                            <a href="shop-details.html">
-                            <h5 class="card-title">{{$Flowering->productName}}</h5>
-                            </a>
-                            <div class="price-box">
-                                                @if($Flowering->discount > 0)
-                                                <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$Flowering->costPrice}}</span>
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$Flowering->costPrice}}</b></span>
-                                                @else
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$Flowering->costPrice}}</b></span>
-                                                @endif
-                                            </div>
-                        </div>
-                    </div>
+            <div class="row">
+            @foreach($Flowering as $shopcard)
+<div class="col-6 col-sm-6 col-lg-3 col-md-3 mb-5">
+    <a href="{{url('products/'. $shopcard->slug)}}">
+        <div class="card">
+            <img style="height:200px; width:100%;" src="{{ asset('images/'.$shopcard->image) }}" alt="">
+            <div class="card-body">
+                <h5 class="card-title">{{$shopcard->productName}}</h5>
+                <div class="price-box">
+                    @if($shopcard->discount > 0)
+                    <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$shopcard->costPrice}}</span>
+                    <span class="new-price" style="color:#70c745"><b> $    {{$shopcard->discountPrice}}</b></span>
+                    @else
+                    <span class="new-price" style="color:#70c745"><b> $   {{$shopcard->costPrice}}</b></span>
+                    @endif
                 </div>
-                @endforeach
+                
+                <a href="{{ route('addbook.to.cart', $shopcard->id) }}" class="btn btn-success mt-3">
+                    Add to Cart
+                </a>
             </div>
+        </div>
+    </a>
+</div>
+@endforeach
+
+</div>
+
+
             </div>
 
             <!-- non-flowering -->
@@ -509,75 +474,37 @@ $Flowering = DB::table('products')
 $nonflowering = DB::table('products')
 ->join('species', 'products.species', '=', 'species.id')
 ->where('products.category', '2')
-->select('products.productName','products.quantity','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
+->select('products.productName','products.quantity','products.slug','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
 ->limit(4)
 ->get();
 
     ?>
             <div id="non-flowering" class="tab-pane" role="tabpanel">
             <div class="row">
-            @foreach($nonflowering as $nonflowering)
-            
-            <div class="col-6 col-sm-6 col-lg-3 col-md-4">
-                    <div class="single-product-area mb-50 wow fadeInUp " data-wow-delay="100ms">
-                        <!-- Product Image -->
-                        <div class="product-img">
-                        <img src="{{ asset('images/'.$nonflowering->image) }}" style="height: 300px;" class="card-img-top shadow" alt="Product 1">
-                            <!-- Product Tag -->
-                            <div class="product-tag">@if($nonflowering->quantity == 0)
-                                            
-                                        @endif
-                                        @if($nonflowering->quantity == 0)
-                                        <!-- If quantity is 0, do not display any sticker -->
-                                    @elseif($nonflowering->discount > 0)
-                                        <a href="">{{- $nonflowering->discount }}%</a> 
-                                    @else
-                                       <a href="">NEW</a>
-                                    @endif
-                            </div>
-                          
-                                            
-                                               
-                            <div class="product-meta d-flex">
-                            @if($nonflowering->quantity == 0)
-                            <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success" style="background:red;" href="#">
-                Out Of Stock
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                                @else
-                                <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success add-to-cart" style="background:#70c745" href="{{ route('addbook.to.cart', $nonflowering->id) }}">
-                 Add to Cart
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                              
-                                @endif
-                            </div>
-                        </div>
-                        <!-- Product Info -->
-                        <div class="product-info mt-15 text-center">
-                            <a href="shop-details.html">
-                            <h5 class="card-title">{{$nonflowering->productName}}</h5>
-                            </a>
-                            <div class="price-box">
-                                                @if($nonflowering->discount > 0)
-                                                <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$nonflowering->costPrice}}</span>
-                                                <span class="new-price"  style="color:#70c745"><b> Rs   {{$nonflowering->costPrice}}</b></span>
-                                                @else
-                                                <span class="new-price"  style="color:#70c745"><b> Rs   {{$nonflowering->costPrice}}</b></span>
-                                                @endif
-                                            </div>
-                        </div>
-                    </div>
+            @foreach($nonflowering as $shopcard)
+<div class="col-6 col-sm-6 col-lg-3 col-md-3 mb-5">
+    <a href="{{url('products/'. $shopcard->slug)}}">
+        <div class="card">
+            <img style="height:200px; width:100%;" src="{{ asset('images/'.$shopcard->image) }}" alt="">
+            <div class="card-body">
+                <h5 class="card-title">{{$shopcard->productName}}</h5>
+                <div class="price-box">
+                    @if($shopcard->discount > 0)
+                    <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$shopcard->costPrice}}</span>
+                    <span class="new-price" style="color:#70c745"><b> $    {{$shopcard->discountPrice}}</b></span>
+                    @else
+                    <span class="new-price" style="color:#70c745"><b> $   {{$shopcard->costPrice}}</b></span>
+                    @endif
                 </div>
-                @endforeach
+                
+                <a href="{{ route('addbook.to.cart', $shopcard->id) }}" class="btn btn-success mt-3">
+                    Add to Cart
+                </a>
+            </div>
+        </div>
+    </a>
+</div>
+@endforeach
             </div>
             </div>
 
@@ -586,74 +513,36 @@ $nonflowering = DB::table('products')
 $indoor = DB::table('products')
 ->join('species', 'products.species', '=', 'species.id')
 ->where('products.category', '3')
-->select('products.productName','products.quantity','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
+->select('products.productName','products.quantity','products.slug','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
 ->limit(4)
 ->get();
     ?>
             <div id="indoor" class="tab-pane" role="tabpanel">
             <div class="row">
-            @foreach($indoor as $indoor)
-            
-            <div class="col-6 col-sm-6 col-lg-3 col-md-4">
-                    <div class="single-product-area mb-50 wow fadeInUp " data-wow-delay="100ms">
-                        <!-- Product Image -->
-                        <div class="product-img">
-                        <img src="{{ asset('images/'.$indoor->image) }}" style="height: 300px;" class="card-img-top shadow" alt="Product 1">
-                            <!-- Product Tag -->
-                            <div class="product-tag">@if($indoor->quantity == 0)
-                                            
-                                        @endif
-                                        @if($indoor->quantity == 0)
-                                        <!-- If quantity is 0, do not display any sticker -->
-                                    @elseif($indoor->discount > 0)
-                                        <a href="">{{- $indoor->discount }}%</a> 
-                                    @else
-                                       <a href="">NEW</a>
-                                    @endif
-                            </div>
-                          
-                                            
-                                               
-                            <div class="product-meta d-flex">
-                            @if($indoor->quantity == 0)
-                            <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success" style="background:red;" href="#">
-                Out Of Stock
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                                @else
-                                <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success add-to-cart" style="background:#70c745" href="{{ route('addbook.to.cart', $indoor->id) }}">
-                 Add to Cart
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                              
-                                @endif
-                            </div>
-                        </div>
-                        <!-- Product Info -->
-                        <div class="product-info mt-15 text-center">
-                            <a href="shop-details.html">
-                            <h5 class="card-title">{{$indoor->productName}}</h5>
-                            </a>
-                            <div class="price-box">
-                                                @if($indoor->discount > 0)
-                                                <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$indoor->costPrice}}</span>
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$indoor->costPrice}}</b></span>
-                                                @else
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$indoor->costPrice}}</b></span>
-                                                @endif
-                                            </div>
-                        </div>
-                    </div>
+            @foreach($indoor as $shopcard)
+<div class="col-6 col-sm-6 col-lg-3 col-md-3 mb-5">
+    <a href="{{url('products/'. $shopcard->slug)}}">
+        <div class="card">
+            <img style="height:200px; width:100%;" src="{{ asset('images/'.$shopcard->image) }}" alt="">
+            <div class="card-body">
+                <h5 class="card-title">{{$shopcard->productName}}</h5>
+                <div class="price-box">
+                    @if($shopcard->discount > 0)
+                    <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$shopcard->costPrice}}</span>
+                    <span class="new-price" style="color:#70c745"><b> $    {{$shopcard->discountPrice}}</b></span>
+                    @else
+                    <span class="new-price" style="color:#70c745"><b> $   {{$shopcard->costPrice}}</b></span>
+                    @endif
                 </div>
-                @endforeach
+                
+                <a href="{{ route('addbook.to.cart', $shopcard->id) }}" class="btn btn-success mt-3">
+                    Add to Cart
+                </a>
+            </div>
+        </div>
+    </a>
+</div>
+@endforeach
             </div>
             </div>
 
@@ -662,75 +551,36 @@ $indoor = DB::table('products')
 $outdoor = DB::table('products')
 ->join('species', 'products.species', '=', 'species.id')
 ->where('products.category', '4')
-->select('products.productName','products.quantity','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
+->select('products.productName','products.quantity','products.slug','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
 ->limit(4)
 ->get();
     ?>
             <div id="outdoor" class="tab-pane" role="tabpanel">
             <div class="row">
-            @foreach($outdoor as $outdoor)
-            
-            <div class="col-6 col-sm-6 col-lg-3 col-md-4">
-                    <div class="single-product-area mb-50 wow fadeInUp " data-wow-delay="100ms">
-                        <!-- Product Image -->
-                        <div class="product-img">
-                        <img src="{{ asset('images/'.$outdoor->image) }}" style="height: 300px;" class="card-img-top shadow" alt="Product 1">
-                            <!-- Product Tag -->
-                            <div class="product-tag">@if($outdoor->quantity == 0)
-                                            
-                                        @endif
-                                        @if($outdoor->quantity == 0)
-                                        <!-- If quantity is 0, do not display any sticker -->
-                                    @elseif($outdoor->discount > 0)
-                                        <a href="">{{- $outdoor->discount }}%</a> 
-                                    @else
-                                       <a href="">NEW</a>
-                                    @endif
-                            </div>
-                          
-                                            
-                                               
-                            <div class="product-meta d-flex">
-                            @if($outdoor->quantity == 0)
-                            <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success" style="background:red;" href="#">
-                Out Of Stock
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                                @else
-                                <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success add-to-cart" style="background:#70c745" href="{{ route('addbook.to.cart', $outdoor->id) }}">
-                 Add to Cart
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                              
-                                @endif
-                            </div>
-                        </div>
-                        <!-- Product Info -->
-                        <div class="product-info mt-15 text-center">
-                            <a href="shop-details.html">
-                            <h5 class="card-title">{{$outdoor->productName}}</h5>
-                            </a>
-                            <div class="price-box">
-                                                @if($outdoor->discount > 0)
-                                                <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$outdoor->costPrice}}</span>
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$outdoor->costPrice}}</b></span>
-                                                @else
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$outdoor->costPrice}}</b></span>
-                                                @endif
-                                            </div>
-                        </div>
-                    </div>
+            @foreach($outdoor as $shopcard)
+<div class="col-6 col-sm-6 col-lg-3 col-md-3 mb-5">
+    <a href="{{url('products/'. $shopcard->slug)}}">
+        <div class="card">
+            <img style="height:200px; width:100%;" src="{{ asset('images/'.$shopcard->image) }}" alt="">
+            <div class="card-body">
+                <h5 class="card-title">{{$shopcard->productName}}</h5>
+                <div class="price-box">
+                    @if($shopcard->discount > 0)
+                    <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$shopcard->costPrice}}</span>
+                    <span class="new-price" style="color:#70c745"><b> $    {{$shopcard->discountPrice}}</b></span>
+                    @else
+                    <span class="new-price" style="color:#70c745"><b> $   {{$shopcard->costPrice}}</b></span>
+                    @endif
                 </div>
-                @endforeach
+                
+                <a href="{{ route('addbook.to.cart', $shopcard->id) }}" class="btn btn-success mt-3">
+                    Add to Cart
+                </a>
             </div>
+        </div>
+    </a>
+</div>
+@endforeach </div>
             </div>
 
 
@@ -739,75 +589,36 @@ $outdoor = DB::table('products')
 $succulents = DB::table('products')
 ->join('species', 'products.species', '=', 'species.id')
 ->where('products.category', '5')
-->select('products.productName','products.quantity','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
+->select('products.productName','products.quantity','products.slug','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
 ->limit(4)
 ->get();
     ?>
             <div id="succulents" class="tab-pane" role="tabpanel">
             <div class="row">
-            @foreach($succulents as $succulents)
-            
-            <div class="col-6 col-sm-6 col-lg-3 col-md-4">
-                    <div class="single-product-area mb-50 wow fadeInUp " data-wow-delay="100ms">
-                        <!-- Product Image -->
-                        <div class="product-img">
-                        <img src="{{ asset('images/'.$succulents->image) }}" style="height: 300px;" class="card-img-top shadow" alt="Product 1">
-                            <!-- Product Tag -->
-                            <div class="product-tag">@if($succulents->quantity == 0)
-                                            
-                                        @endif
-                                        @if($succulents->quantity == 0)
-                                        <!-- If quantity is 0, do not display any sticker -->
-                                    @elseif($succulents->discount > 0)
-                                        <a href="">{{- $succulents->discount }}%</a> 
-                                    @else
-                                       <a href="">NEW</a>
-                                    @endif
-                            </div>
-                          
-                                            
-                                               
-                            <div class="product-meta d-flex">
-                            @if($succulents->quantity == 0)
-                            <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success" style="background:red;" href="#">
-                Out Of Stock
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                                @else
-                                <button class="btn btn-warning wishlist">
-                <i class="icon_heart_alt"></i>
-              </button>
-              <button class="btn btn-success add-to-cart" style="background:#70c745" href="{{ route('addbook.to.cart', $succulents->id) }}">
-                 Add to Cart
-              </button>
-                                
-                                <a href="#" class="compare-btn"><i class="arrow_left-right_alt"></i></a>
-                              
-                                @endif
-                            </div>
-                        </div>
-                        <!-- Product Info -->
-                        <div class="product-info mt-15 text-center">
-                            <a href="shop-details.html">
-                            <h5 class="card-title">{{$succulents->productName}}</h5>
-                            </a>
-                            <div class="price-box">
-                                                @if($succulents->discount > 0)
-                                                <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$succulents->costPrice}}</span>
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$succulents->costPrice}}</b></span>
-                                                @else
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$succulents->costPrice}}</b></span>
-                                                @endif
-                                            </div>
-                        </div>
-                    </div>
+            @foreach($succulents as $shopcard)
+<div class="col-6 col-sm-6 col-lg-3 col-md-3 mb-5">
+    <a href="{{url('products/'. $shopcard->slug)}}">
+        <div class="card">
+            <img style="height:200px; width:100%;" src="{{ asset('images/'.$shopcard->image) }}" alt="">
+            <div class="card-body">
+                <h5 class="card-title">{{$shopcard->productName}}</h5>
+                <div class="price-box">
+                    @if($shopcard->discount > 0)
+                    <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$shopcard->costPrice}}</span>
+                    <span class="new-price" style="color:#70c745"><b> $    {{$shopcard->discountPrice}}</b></span>
+                    @else
+                    <span class="new-price" style="color:#70c745"><b> $   {{$shopcard->costPrice}}</b></span>
+                    @endif
                 </div>
-                @endforeach
+                
+                <a href="{{ route('addbook.to.cart', $shopcard->id) }}" class="btn btn-success mt-3">
+                    Add to Cart
+                </a>
             </div>
+        </div>
+    </a>
+</div>
+@endforeach  </div>
             </div>
 
 
@@ -816,7 +627,7 @@ $succulents = DB::table('products')
 $medicinal = DB::table('products')
 ->join('species', 'products.species', '=', 'species.id')
 ->where('products.category', '6')
-->select('products.productName','products.quantity','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
+->select('products.productName','products.quantity','products.slug','products.id', 'products.costPrice','products.discountPrice','products.discount' ,'products.image', 'species.name as speciesName')
 ->limit(4)
 ->get();
     ?>
@@ -831,51 +642,37 @@ $medicinal = DB::table('products')
 
 
             
-            @foreach($medicinal as $medicinal)
-            
-            <div class="col-6 col-sm-6 col-lg-3 col-md-4">
-            <div class="card">
-  <img class="card-img-top" src="{{ asset('images/'.$medicinal->image) }}" alt="Card image">
-  <div class="product-tag">@if($medicinal->quantity == 0)
-                                            
-                                            @endif
-                                            @if($medicinal->quantity == 0)
-                                            <!-- If quantity is 0, do not display any sticker -->
-                                        @elseif($medicinal->discount > 0)
-                                            <a href="">{{- $medicinal->discount }}%</a> 
-                                        @else
-                                           <a href="">NEW</a>
-                                        @endif
-                                </div>
-  <div class="card-body">
-    <h4 class="card-title">{{$medicinal->productName}}</h4>
-    @if($medicinal->quantity == 0)
-    <a href="#" class="btn btn-primary">Out Of Stock</a>
-    @else
-    <a href="#" class="btn btn-primary">Add to cart</a>
-    @endif
-    <a href="#" class="btn btn-primary">  @if($medicinal->discount > 0)
-                                                <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$medicinal->costPrice}}</span>
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$medicinal->costPrice}}</b></span>
-                                                @else
-                                                <span class="new-price"  style="color:#70c745"><b> Rs:   {{$medicinal->costPrice}}</b></span>
-                                                @endif</a>
-  </div>
+            @foreach($medicinal as $shopcard)
+<div class="col-6 col-sm-6 col-lg-3 col-md-3 mb-5">
+    <a href="{{url('products/'. $shopcard->slug)}}">
+        <div class="card">
+            <img style="height:200px; width:100%;" src="{{ asset('images/'.$shopcard->image) }}" alt="">
+            <div class="card-body">
+                <h5 class="card-title">{{$shopcard->productName}}</h5>
+                <div class="price-box">
+                    @if($shopcard->discount > 0)
+                    <span class="old-price" style="font-size:15px;text-decoration: line-through;">${{$shopcard->costPrice}}</span>
+                    <span class="new-price" style="color:#70c745"><b> $    {{$shopcard->discountPrice}}</b></span>
+                    @else
+                    <span class="new-price" style="color:#70c745"><b> $   {{$shopcard->costPrice}}</b></span>
+                    @endif
+                </div>
+                
+                <a href="{{ route('addbook.to.cart', $shopcard->id) }}" class="btn btn-success mt-3">
+                    Add to Cart
+                </a>
+            </div>
+        </div>
+    </a>
 </div>
-
-
-
-
-
-
-
 @endforeach
                   
     </div>
    
 </div>
-<!-- end new portion -->
-    <!-- ##### Service Area Start ##### -->
+</div>
+</div>
+<!-- end new portion -->     <!-- ##### Service Area Start ##### -->
     <section class="our-services-area bg-gray section-padding-100-0">
         <div class="container">
             <div class="row">

@@ -94,6 +94,7 @@ Route::post('/process-order',[ProductController::class, 'processOrder'])->name('
     Route::get('viewfeedback',[usercontroller::class,  'viewfeedback']);
 
 
+
     Route::get('/blog', [userController::class, 'blog']);
     Route::get('/aboutus', [userController::class, 'aboutus']);
 

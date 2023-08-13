@@ -112,7 +112,7 @@
                             </div>
                             <div class="collapse" id="collapseLayoutss" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="#">Product Review</a>
+                                    <a class="nav-link" href="{{url('viewproductreview')}}">Product Review</a>
                                     
                                 </nav>
                             </div>

@@ -65,6 +65,7 @@
         <h4 class="widget-title">Prices</h4>
         <div class="widget-desc">
             <div class="slider-range">
+                <br><br>
                 <div id="price-slider"></div>
                 <input type="text" id="price-range" readonly>
             </div>
